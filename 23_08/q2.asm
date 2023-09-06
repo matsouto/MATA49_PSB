@@ -1,0 +1,3 @@
+MOV A,10
+MOV B,25
+SUB B,A
