@@ -15,7 +15,7 @@ lenFraseImpar equ   $ - fraseImpar
 ;------------------------------------
 
 section .bss; declaração sem inicialização das informações que serão usadas
-lenString equ 50 
+lenString equ 50
 string resb lenString 
 
 ;------------------------------------
@@ -31,15 +31,38 @@ _start:
   mov rdx,  lenString
   syscall
 
-  test sil,1
+  xor rax,rax ; Limpa o registrador
 
+contar:
+  cmp byte [rsi + rax], 0  ; Checa se o charactere é o último 
+  je  testar 
+  inc rax  
+  jmp contar
+
+testar:
+  test rax,1
+  jz   par 
+  jnz  impar 
+
+impar:
   ;ESCRITA
   mov rax,  SYS_WRITE
   mov rdi,  STDOUT
-  mov rsi,  string 
-  mov rdx,  3           ; printa apenas os primeiros 3 digitos
+  mov rsi,  frasePar 
+  mov rdx,  lenFrasePar           
   syscall 
+  jmp exit
+  
+par:
+  ;ESCRITA
+  mov rax,  SYS_WRITE
+  mov rdi,  STDOUT
+  mov rsi,  fraseImpar 
+  mov rdx,  lenFraseImpar           
+  syscall 
+  jmp exit
 
+exit:
   ;EXIT
   mov rax, SYS_EXIT
   mov rdi, 0
